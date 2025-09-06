@@ -1,0 +1,37 @@
+Verify CPU Virtualization Support
+
+Check Virtualization Capabilities
+Run the following command to verify your CPU’s support:
+  lscpu | grep -i Virtualization
+
+Ensure Kernel KVM Module Support
+  zgrep CONFIG_KVM /proc/config.gz
+
+Update Your System
+  sudo pacman -Syu
+
+Install QEMU, KVM, and Dependencies
+  sudo pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo
+
+Enable and Start Libvirt Daemon
+  sudo systemctl enable libvirtd.service
+  sudo systemctl start libvirtd.service
+
+Reboot the system and add user to libvirt group
+  sudo adduser -g $USER libvirt
+
+Optimize Host Performance with TuneD
+
+  Enable TuneD: sudo systemctl enable --now tuned
+  Check Current Profile: tuned-adm active
+  List Available Profiles: tuned-adm list
+  Set the Virtual Host Profile: sudo tuned-adm profile virtual-host
+  Restart the System
+
+Configure Network Bridge
+By default, virtual machines are connected to a NAT network. You may need to manually activate this network.
+
+  Check Network Status: sudo virsh net-list --all
+  Start and Enable Autostart for Default Network:
+  sudo virsh net-start default
+  sudo virsh net-autostart default
